@@ -25,6 +25,18 @@ Built as a **final-year project**, it is a complete system: an Expo/React Native
 
 ---
 
+## 📸 Screenshots
+
+| Sign in | Detection | Scan history |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/signin.png" width="230" alt="Sign-in screen with email and password fields" /> | <img src="docs/screenshots/detection.png" width="230" alt="Detection screen offering camera capture or gallery upload before analysis" /> | <img src="docs/screenshots/history.png" width="230" alt="Scan history listing past detections with their dates" /> |
+
+| Home | Appointments | Profile |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/home.png" width="230" alt="Home tab after signing in" /> | <img src="docs/screenshots/appointments.png" width="230" alt="Appointment list with dentist, clinic, date and time" /> | <img src="docs/screenshots/profile.png" width="230" alt="Profile screen with account details" /> |
+
+---
+
 ## ✨ Features
 
 | Feature | What it does |
@@ -197,7 +209,7 @@ Full backend notes are in [`backend/README.md`](backend/README.md).
 ## 🗺️ Roadmap
 
 - [ ] Train and ship a dedicated dental model instead of a general vision model
-- [ ] Add screenshots and a short demo video to this README
+- [ ] Record a short demo video
 - [ ] Dentist-side view of submitted scans
 - [ ] Offline queue so a scan taken without signal uploads later
 - [ ] Move uploads off local disk into object storage
