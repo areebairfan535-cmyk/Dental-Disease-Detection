@@ -23,23 +23,39 @@ export default function ProfileScreen() {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error'>('success');
 
+  // The API returns null for anything the user has not filled in yet — phone,
+  // date of birth, gender. Feeding null into a TextInput's `value` makes React
+  // treat the field as uncontrolled and log a warning, so coerce every field
+  // to a string before it reaches the form.
+  const toFormValues = (profile: any) => ({
+    email: profile?.email ?? '',
+    full_name: profile?.full_name ?? '',
+    username: profile?.username ?? '',
+    phone: profile?.phone ?? '',
+    date_of_birth: profile?.date_of_birth ?? '',
+    gender: profile?.gender ?? '',
+    address: profile?.address ?? '',
+    profile_image: profile?.profile_image ?? '',
+    created_at: profile?.created_at ?? null,
+  });
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
         const response = await BackendService.getProfileDetail();
         if (response.ok && response.data?.success) {
-          setUser(response.data.profile);
+          setUser(toFormValues(response.data.profile));
           setStatistics(response.data.statistics || { total_appointments: 0, total_detections: 0 });
         } else {
           const stored = await AsyncStorage.getItem('loggedInUser');
           if (stored) {
-            setUser(JSON.parse(stored));
+            setUser(toFormValues(JSON.parse(stored)));
           }
         }
       } catch (error) {
         const stored = await AsyncStorage.getItem('loggedInUser');
         if (stored) {
-          setUser(JSON.parse(stored));
+          setUser(toFormValues(JSON.parse(stored)));
         }
       } finally {
         setLoading(false);
