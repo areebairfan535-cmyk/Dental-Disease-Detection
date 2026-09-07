@@ -5,7 +5,6 @@
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["*"]
@@ -15,8 +14,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "app/(tabs)/detection.tsx",
-    ".vscode/cvscanner.tsx"
+    "expo-env.d.ts"
   ]
 }
