@@ -2,7 +2,7 @@
 
 # 🦷 Dental Disease Detection
 
-**Point your phone at a tooth and get an AI-assisted read on what might be wrong — then book a dentist about it.**
+**Upload a photo of a tooth, get an AI-assisted read on what might be wrong — then book a dentist about it.**
 
 [![Expo](https://img.shields.io/badge/Expo-SDK%2054-000020?logo=expo&logoColor=white)](https://docs.expo.dev/versions/v54.0.0/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.81-61DAFB?logo=react&logoColor=black)](https://reactnative.dev/)
@@ -17,7 +17,7 @@
 
 ## 📌 Overview
 
-**Dental Disease Detection** turns a phone camera into a first-pass dental screening tool. A patient photographs a tooth, the image goes to a vision model, and the app returns the conditions it thinks it can see — each with a confidence score. Every scan is saved to a personal history, and the patient can book a dentist appointment from the same app.
+**Dental Disease Detection** is a first-pass dental screening tool for the phone. A patient uploads a photo of a tooth, the image goes to a vision model, and the app returns the condition it thinks it can see along with what to do about it. Every scan is saved to a personal history, and the patient can book a dentist appointment from the same app.
 
 Built as a **final-year project**, it is a complete system: an Expo/React Native client, a PHP REST API, and an AI layer that runs against either a hosted vision model or your own trained dental model.
 
@@ -27,13 +27,17 @@ Built as a **final-year project**, it is a complete system: an Expo/React Native
 
 ## 📸 Screenshots
 
-| Sign in | Detection | Scan history |
+| Sign in | Detection | Scan result |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/signin.png" width="230" alt="Sign-in screen with email and password fields" /> | <img src="docs/screenshots/detection.png" width="230" alt="Detection screen offering camera capture or gallery upload before analysis" /> | <img src="docs/screenshots/history.png" width="230" alt="Scan history listing past detections with their dates" /> |
+| <img src="docs/screenshots/signin.png" width="230" alt="Sign-in screen with email and password fields" /> | <img src="docs/screenshots/detection.png" width="230" alt="Detection screen with an empty photo slot, a Gallery button and an Analyze Teeth button" /> | <img src="docs/screenshots/scan-result.png" width="230" alt="Scan result showing the photographed tooth, the diagnosis, advice and recommended dentists" /> |
 
-| Home | Appointments | Profile |
+| Scan history | Appointments | Profile |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/home.png" width="230" alt="Home tab after signing in" /> | <img src="docs/screenshots/appointments.png" width="230" alt="Appointment list with dentist, clinic, date and time" /> | <img src="docs/screenshots/profile.png" width="230" alt="Profile screen with account details" /> |
+| <img src="docs/screenshots/history.png" width="230" alt="Scan history listing past detections with their images, dates and advice" /> | <img src="docs/screenshots/appointments.png" width="230" alt="Appointment booking with a list of dentists, their specialities and next free slot" /> | <img src="docs/screenshots/profile.png" width="230" alt="Profile screen with account details and an editable form" /> |
+
+| Home | Explore |
+|:---:|:---:|
+| <img src="docs/screenshots/home.png" width="230" alt="Home dashboard with scan count, last scan date and quick actions" /> | <img src="docs/screenshots/explore.png" width="230" alt="Explore screen linking to the scanner and to past records" /> |
 
 ---
 
@@ -41,11 +45,11 @@ Built as a **final-year project**, it is a complete system: an Expo/React Native
 
 | Feature | What it does |
 |---|---|
-| 📷 **Camera scan** | Capture a tooth with the in-app camera, or pick an existing photo |
-| 🧠 **AI detection** | Vision model returns suspected conditions with confidence scores |
-| 📊 **Scan results** | Findings laid out per condition and saved against the account |
+| 🖼️ **Photo upload** | Pick a tooth photo from the gallery and send it for analysis |
+| 🧠 **AI detection** | Vision model returns the suspected condition and what to do about it |
+| 📊 **Scan results** | The finding, the advice, and dentists suited to that condition |
 | 🕓 **History** | Every past scan with its image and result, reviewable any time |
-| 📅 **Appointments** | Book, view and manage dentist appointments |
+| 📅 **Appointments** | Book a dentist by speciality and available slot |
 | 👤 **Profile** | Account details, editable, with a change history |
 | 🔐 **Auth** | Email sign-up, sign-in, bearer-token sessions, password recovery |
 
@@ -84,14 +88,13 @@ That third branch matters: with no model configured the app refuses rather than 
 ```
 Dental-Disease-Detection/
 ├── app/                       # Expo Router screens
-│   ├── index.tsx              #   Entry
-│   ├── signin.tsx             #   Sign in
+│   ├── index.tsx              #   Sign in (entry)
 │   ├── signup.tsx             #   Create account
 │   ├── forgot-password.tsx    #   Password recovery
-│   ├── cvscanner.tsx          #   Camera scanner
 │   ├── scan-result.tsx        #   AI findings for one scan
 │   └── (tabs)/
-│       ├── index.tsx          #   Home
+│       ├── home.tsx           #   Dashboard
+│       ├── explore.tsx        #   Services
 │       ├── detection.tsx      #   Start a scan
 │       ├── history.tsx        #   Past scans
 │       ├── appointments.tsx   #   Bookings
@@ -99,7 +102,7 @@ Dental-Disease-Detection/
 ├── services/
 │   ├── BackendService.ts      # API client
 │   └── storage.ts             # Local session storage
-├── components/                # Shared UI
+├── mock-ai-server/            # Stand-in AI server for local development
 ├── backend/                   # PHP REST API
 │   ├── api/
 │   │   ├── auth.php           #   signup · signin · logout
