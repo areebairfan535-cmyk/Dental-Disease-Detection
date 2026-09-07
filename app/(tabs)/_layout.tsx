@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Tabs, useRouter } from 'expo-router';
-import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getLoggedInUser } from '../../services/storage';
 
@@ -25,11 +24,10 @@ export default function TabLayout() {
         headerTintColor: '#fff',
         headerTitleStyle: { fontWeight: 'bold' },
         tabBarActiveTintColor: '#007AFF',
-        tabBarButton: (props) => <TouchableOpacity {...props} />,
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color, size }) => (

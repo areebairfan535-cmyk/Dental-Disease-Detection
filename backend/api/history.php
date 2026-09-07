@@ -194,9 +194,15 @@ function saveDetectionResultRow(PDO $conn, int $detectionId, array $results): vo
 
 function decodeHistoryRow(array $row): array
 {
-    $row['detected_issues'] = json_decode($row['detected_issues'] ?? '[]', true) ?: [];
-    $row['recommendations'] = json_decode($row['recommendations'] ?? '[]', true) ?: [];
-    $row['result'] = $row['detected_issues'][0] ?? $row['detection_type'] ?? 'Scan result';
+    $row['detected_issues'] = decodeTextList($row['detected_issues'] ?? null);
+    $row['recommendations'] = decodeTextList($row['recommendations'] ?? null);
+    // detection_type is the condition name on rows that carry one, but scans the
+    // app records store the generic 'dental_scan' there and put the condition in
+    // detected_issues, so prefer whichever of the two actually names a finding.
+    $type = $row['detection_type'] ?? '';
+    $row['result'] = ($type !== '' && $type !== 'dental_scan')
+        ? $type
+        : ($row['detected_issues'][0] ?? 'Scan result');
     $row['advice'] = implode(' ', $row['recommendations']);
     return $row;
 }

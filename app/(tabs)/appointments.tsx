@@ -106,7 +106,7 @@ export default function AppointmentsScreen() {
       {condition ? <Text style={styles.subtitle}>Detected condition: {condition}</Text> : null}
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Choose D0ctorr</Text>
+        <Text style={styles.cardTitle}>Choose Doctor</Text>
         {doctorList.map((doctor) => (
           <TouchableOpacity
             key={doctor.id}

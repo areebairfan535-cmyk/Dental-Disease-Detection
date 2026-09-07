@@ -10,6 +10,7 @@ export default function RootLayout() {
       <Stack.Screen name="index" options={{ title: 'Sign In' }} />
       <Stack.Screen name="signup" options={{ title: 'Create Account' }} />
       <Stack.Screen name="forgot-password" options={{ title: 'Forgot Password' }} />
+      <Stack.Screen name="scan-result" options={{ title: 'Scan Result' }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
   );

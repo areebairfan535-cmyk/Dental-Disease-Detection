@@ -1,10 +1,43 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
+import BackendService from '../../services/BackendService';
 
 export default function HomeDashboard() {
   const router = useRouter();
+  const [scanCount, setScanCount] = useState<number | null>(null);
+  const [lastScan, setLastScan] = useState<string | null>(null);
+
+  // Reload on focus so the counts match the history after a new scan.
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      BackendService.getHistory().then(({ ok, data }) => {
+        if (!active || !ok) return;
+        const scans = Array.isArray(data?.history) ? data.history : [];
+        setScanCount(typeof data?.total === 'number' ? data.total : scans.length);
+        const latest = scans[0]?.scan_date ?? null;
+        // "2026-09-07 08:07:03" is too wide for the stat card, so show "7 Sep".
+        const parsed = latest ? new Date(String(latest).replace(' ', 'T')) : null;
+        setLastScan(
+          parsed && !Number.isNaN(parsed.getTime())
+            ? parsed.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
+            : null,
+        );
+      });
+      return () => {
+        active = false;
+      };
+    }, []),
+  );
+
+  const handleLogout = async () => {
+    // Clearing the stored token matters as much as leaving the screen — without
+    // it the session stays valid and the next launch walks straight back in.
+    await BackendService.logout();
+    router.replace('/');
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -16,12 +49,12 @@ export default function HomeDashboard() {
 
       <View style={styles.statsRow}>
         <View style={styles.statCard}>
-          <Text style={styles.statValue}>24</Text>
+          <Text style={styles.statValue}>{scanCount ?? '—'}</Text>
           <Text style={styles.statLabel}>Scans</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statValue}>98%</Text>
-          <Text style={styles.statLabel}>Accuracy</Text>
+          <Text style={styles.statValue}>{lastScan ?? '—'}</Text>
+          <Text style={styles.statLabel}>Last scan</Text>
         </View>
       </View>
 
@@ -43,7 +76,7 @@ export default function HomeDashboard() {
           <Text style={[styles.actionText, styles.secondaryActionText]}>View Profile</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.actionButton, styles.secondaryAction]} onPress={() => router.replace('/') }>
+        <TouchableOpacity style={[styles.actionButton, styles.secondaryAction]} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={22} color="#1e88e5" />
           <Text style={[styles.actionText, styles.secondaryActionText]}>Log out</Text>
         </TouchableOpacity>

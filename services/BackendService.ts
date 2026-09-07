@@ -266,15 +266,26 @@ class BackendService {
 
       const formData = new FormData();
       const uriParts = imageUri.split('/');
-      const fileName = uriParts[uriParts.length - 1];
-      const fileExt = fileName.split('.').pop()?.toLowerCase();
+      const rawName = uriParts[uriParts.length - 1] || 'scan.jpg';
+      const fileExt = rawName.split('.').pop()?.toLowerCase();
       const mimeType = fileExt === 'png' ? 'image/png' : 'image/jpeg';
 
-      formData.append('image', {
-        uri: imageUri,
-        name: fileName,
-        type: mimeType,
-      } as any);
+      if (Platform.OS === 'web') {
+        // On web the picker hands back a blob: or data: URL, and FormData only
+        // accepts a real Blob — appending {uri, name, type} serialises it to
+        // "[object Object]" and the server sees a text field, not a file.
+        const blob = await fetch(imageUri).then((response) => response.blob());
+        const fileName = rawName.includes('.') ? rawName : `scan.${mimeType === 'image/png' ? 'png' : 'jpg'}`;
+        formData.append('image', blob, fileName);
+      } else {
+        // React Native's FormData understands this shape and streams the file
+        // straight off disk.
+        formData.append('image', {
+          uri: imageUri,
+          name: rawName,
+          type: mimeType,
+        } as any);
+      }
 
       const response = await this.request('/api/detection.php?action=upload', {
         method: 'POST',

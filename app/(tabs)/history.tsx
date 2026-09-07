@@ -36,10 +36,13 @@ export default function HistoryScreen() {
 
   const renderItem = ({ item }: { item: HistoryItem }) => {
     const imagePath = item.image || item.image_path || item.path;
+    // Stored paths are inconsistent — some rows have "/uploads/x.jpg", older ones
+    // "uploads/x.jpg". Without the leading slash the join produces
+    // "http://host:8000uploads/x.jpg" and the thumbnail silently fails to load.
     const displayUri = imagePath
       ? imagePath.startsWith('http') || imagePath.startsWith('file:') || imagePath.startsWith('content:')
         ? imagePath
-        : `${API_BASE_URL}${imagePath}`
+        : `${API_BASE_URL}/${imagePath.replace(/^\/+/, '')}`
       : null;
     const recommendations = Array.isArray(item.recommendations)
       ? item.recommendations.join(' ')

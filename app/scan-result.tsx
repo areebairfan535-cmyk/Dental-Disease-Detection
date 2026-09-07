@@ -3,8 +3,22 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+type Doctor = {
+  id: string | number;
+  name?: string;
+  specialty?: string;
+  availability?: string;
+};
+
+type Scan = {
+  image?: string;
+  result?: string;
+  advice?: string;
+  doctors?: Doctor[];
+};
+
 export default function ScanResultScreen() {
-  const [scan, setScan] = useState(null);
+  const [scan, setScan] = useState<Scan | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -25,7 +39,7 @@ export default function ScanResultScreen() {
     router.push('/history');
   };
 
-  const handleBookAppointment = (doctor) => {
+  const handleBookAppointment = (doctor: Doctor) => {
     const doctorQuery = encodeURIComponent(doctor.id);
     const conditionQuery = encodeURIComponent(scan?.result || 'Dental Issue');
     router.push(`/appointments?doctor=${doctorQuery}&condition=${conditionQuery}`);

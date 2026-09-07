@@ -150,8 +150,8 @@ function getDetectionResults(PDO $conn): void
         $results['tooth_positions'] = json_decode($results['tooth_positions'] ?? '[]', true) ?: [];
     }
 
-    $detection['detected_issues'] = json_decode($detection['detected_issues'] ?? '[]', true) ?: [];
-    $detection['recommendations'] = json_decode($detection['recommendations'] ?? '[]', true) ?: [];
+    $detection['detected_issues'] = decodeTextList($detection['detected_issues'] ?? null);
+    $detection['recommendations'] = decodeTextList($detection['recommendations'] ?? null);
 
     jsonResponse(['success' => true, 'detection' => $detection, 'results' => $results]);
 }

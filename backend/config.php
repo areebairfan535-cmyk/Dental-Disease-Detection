@@ -56,6 +56,26 @@ function readJsonBody(): array
     return $data;
 }
 
+/**
+ * Columns such as detected_issues and recommendations hold a JSON list for rows
+ * the app wrote, but plain prose for older ones. Decoding blindly turns the
+ * prose into an empty array and the finding disappears from the screen, so treat
+ * a non-JSON value as a single entry instead of discarding it.
+ */
+function decodeTextList($value): array
+{
+    if ($value === null || $value === '') {
+        return [];
+    }
+
+    $decoded = json_decode($value, true);
+    if (is_array($decoded)) {
+        return array_values(array_filter(array_map('strval', $decoded), 'strlen'));
+    }
+
+    return [is_scalar($decoded) ? (string) $decoded : (string) $value];
+}
+
 function authUserId(PDO $conn): ?int
 {
     $headers = function_exists('getallheaders') ? getallheaders() : [];
